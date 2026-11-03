@@ -9,13 +9,15 @@ import {
   ChevronUp, 
   CheckCircle2, 
   XCircle, 
-  ExternalLink
+  ExternalLink,
+  HelpCircle,
+  FileText
 } from 'lucide-react';
 import { UNSETTLED_MIGRANT_DATA } from '../data/unsettledMigrantData';
 
 export const UnsettledMigrantSection: React.FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'costs' | 'regional' | 'rules'>('costs');
+  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<'meaning' | 'costs' | 'regional' | 'rules'>('meaning');
   
   const data = UNSETTLED_MIGRANT_DATA;
 
@@ -40,7 +42,7 @@ export const UnsettledMigrantSection: React.FC = () => {
               Unsettled Migrants & Asylum Seekers: Annual Spend £{data.totalAsylumSupportSpendBillions}bn
             </h3>
             <p className="text-xs text-[#1F5A45]/80 mt-0.5 max-w-2xl">
-              Breakdown of expenditure for individuals awaiting an initial asylum decision. By UK law, they are <strong>excluded from mainstream DWP benefits (Universal Credit)</strong> and receive statutory Home Office subsistence and hotel/dispersal housing instead.
+              What does "Unsettled Migrant" mean? How is their statutory accommodation & subsistence funded while awaiting an asylum decision?
             </p>
           </div>
         </div>
@@ -63,7 +65,7 @@ export const UnsettledMigrantSection: React.FC = () => {
             className="flex items-center gap-1.5 bg-[#1F5A45] hover:bg-[#164232] text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm shrink-0"
             aria-expanded={isOpen}
           >
-            <span>{isOpen ? 'Close Breakdown' : 'View Unsettled Migrant Data'}</span>
+            <span>{isOpen ? 'Close Section' : 'Open Section'}</span>
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>
@@ -76,10 +78,22 @@ export const UnsettledMigrantSection: React.FC = () => {
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center gap-2 bg-[#E2ECE5] p-1 rounded-xl">
               <button
+                onClick={() => setActiveTab('meaning')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  activeTab === 'meaning'
+                    ? 'bg-[#1F5A45] text-white shadow-sm'
+                    : 'text-[#1F5A45] hover:bg-[#cad9ce]'
+                }`}
+              >
+                <HelpCircle className="w-3.5 h-3.5 text-[#F3DD87]" />
+                <span>What is an "Unsettled Migrant"?</span>
+              </button>
+
+              <button
                 onClick={() => setActiveTab('costs')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'costs'
-                    ? 'bg-[#E9774F] text-white shadow-sm'
+                    ? 'bg-[#1F5A45] text-white shadow-sm'
                     : 'text-[#1F5A45] hover:bg-[#cad9ce]'
                 }`}
               >
@@ -91,24 +105,24 @@ export const UnsettledMigrantSection: React.FC = () => {
                 onClick={() => setActiveTab('regional')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'regional'
-                    ? 'bg-[#E9774F] text-white shadow-sm'
+                    ? 'bg-[#1F5A45] text-white shadow-sm'
                     : 'text-[#1F5A45] hover:bg-[#cad9ce]'
                 }`}
               >
                 <MapPin className="w-3.5 h-3.5" />
-                <span>Regional Dispersal Numbers</span>
+                <span>Regional Dispersal</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('rules')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'rules'
-                    ? 'bg-[#E9774F] text-white shadow-sm'
+                    ? 'bg-[#1F5A45] text-white shadow-sm'
                     : 'text-[#1F5A45] hover:bg-[#cad9ce]'
                 }`}
               >
                 <CreditCard className="w-3.5 h-3.5" />
-                <span>DWP vs Home Office Legal Rules</span>
+                <span>NRPF vs DWP Rules</span>
               </button>
             </div>
 
@@ -122,6 +136,55 @@ export const UnsettledMigrantSection: React.FC = () => {
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>
+
+          {/* TAB 0: WHAT DOES UNSETTLED MIGRANT MEAN? */}
+          {activeTab === 'meaning' && (
+            <div className="space-y-4">
+              <div className="bg-[#EFE8DA] p-5 rounded-xl border border-[#cad9ce] space-y-3">
+                <h4 className="text-base font-black text-[#1F5A45] flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-[#E9774F]" />
+                  Definition: What is an "Unsettled Migrant" in the UK?
+                </h4>
+                <div className="text-xs text-[#1F5A45]/90 space-y-2 leading-relaxed">
+                  <p>
+                    An <strong>unsettled migrant</strong> is any foreign national present in the UK whose immigration status is <strong>pending, temporary, or undecided</strong> under the UK Immigration Rules and 1951 UN Refugee Convention. 
+                  </p>
+                  <p>
+                    The vast majority of individuals in this official expenditure category are <strong>asylum seekers</strong> who have formally applied for humanitarian protection and are waiting for the Home Office to investigate and decide their claim.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                  <div className="bg-[#F8F3E8] p-3.5 rounded-lg border border-[#cad9ce]">
+                    <div className="font-extrabold text-[#1F5A45] text-xs mb-1">1. Legal Exclusion from DWP</div>
+                    <p className="text-[11px] text-[#1F5A45]/80">
+                      Under Section 115 of the Immigration and Asylum Act 1999, unsettled migrants are subject to <strong>No Recourse to Public Funds (NRPF)</strong>. They are strictly prohibited from receiving Universal Credit, Child Benefit, Personal Independence Payment (PIP), or Council Housing.
+                    </p>
+                  </div>
+
+                  <div className="bg-[#F8F3E8] p-3.5 rounded-lg border border-[#cad9ce]">
+                    <div className="font-extrabold text-[#1F5A45] text-xs mb-1">2. Statutory Safety Net</div>
+                    <p className="text-[11px] text-[#1F5A45]/80">
+                      To prevent destitution under domestic and international law, the Home Office operates a standalone support system: <strong>Section 95 Support</strong> (providing basic accommodation and £49.18/wk on an ASPEN card) and <strong>Section 4 Support</strong>.
+                    </p>
+                  </div>
+
+                  <div className="bg-[#F8F3E8] p-3.5 rounded-lg border border-[#cad9ce]">
+                    <div className="font-extrabold text-[#1F5A45] text-xs mb-1">3. Right to Work Restrictions</div>
+                    <p className="text-[11px] text-[#1F5A45]/80">
+                      Unsettled asylum seekers are legally barred from employment. They can only apply for permission to work if their claim has been pending without a decision for more than 12 months through no fault of their own, and work is restricted to jobs on the Shortage Occupation List.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-[#E2ECE5] p-3 rounded-lg border border-[#cad9ce] text-[11px] text-[#1F5A45]">
+                  <strong>What happens when their case settles?</strong>
+                  <br />
+                  If granted refugee status or Indefinite Leave to Remain (ILR), Home Office asylum support terminates within 28 days (the "move-on" period). The person is then transitioned into mainstream society, receives full right to work, and can claim Universal Credit and child benefits through the DWP.
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* TAB 1: COSTS & ALLOWANCES */}
           {activeTab === 'costs' && (

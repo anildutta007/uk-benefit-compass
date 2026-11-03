@@ -59,7 +59,7 @@ export function App() {
     isCarerForSomeone: false,
   });
 
-  const [activeTab, setActiveTab] = useState<'calculator' | 'savings_sipp' | 'criteria_guide'>('calculator');
+  const [activeTab, setActiveTab] = useState<'calculator' | 'savings_sipp' | 'gov_spend' | 'criteria_guide'>('calculator');
   const [expandedBenefitId, setExpandedBenefitId] = useState<string | null>('universal_credit');
 
   const results: CalculationResult = calculateUKBenefits(profile);
@@ -127,6 +127,18 @@ export function App() {
             </button>
 
             <button
+              onClick={() => setActiveTab('gov_spend')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                activeTab === 'gov_spend'
+                  ? 'bg-[#E9774F] text-white shadow-sm'
+                  : 'text-[#E2ECE5] hover:text-white hover:bg-[#1F5A45]'
+              }`}
+            >
+              <Building2 className="w-3.5 h-3.5 text-[#F3DD87]" />
+              <span>UK Government Spend & Map</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('criteria_guide')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'criteria_guide'
@@ -181,10 +193,7 @@ export function App() {
 
       {/* Main Content Body */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
-        {/* Government Expenditure & Regional Breakdown Statistics Banner */}
-        <GovernmentExpenditureStats />
-
-        {/* Unsettled Migrants & Asylum Support Dedicated Breakdown Section */}
+        {/* Unsettled Migrants and Asylum Support (Stays on main screen as requested) */}
         <UnsettledMigrantSection />
 
         {/* TAB 1: SIDE-BY-SIDE CALCULATOR */}
@@ -342,7 +351,14 @@ export function App() {
           />
         )}
 
-        {/* TAB 3: FULL CRITERIA & RULES REFERENCE */}
+        {/* TAB 3: UK GOVERNMENT SPEND & REAL MAP */}
+        {activeTab === 'gov_spend' && (
+          <div className="space-y-6">
+            <GovernmentExpenditureStats />
+          </div>
+        )}
+
+        {/* TAB 4: FULL CRITERIA & RULES REFERENCE */}
         {activeTab === 'criteria_guide' && (
           <div className="bg-[#EFE8DA] rounded-2xl p-6 border-2 border-[#E2ECE5] shadow-sm space-y-6">
             <div>
