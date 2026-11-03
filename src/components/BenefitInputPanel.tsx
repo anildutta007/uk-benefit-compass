@@ -400,7 +400,7 @@ export const BenefitInputPanel: React.FC<Props> = ({ profile, onChange }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-black text-[#1F5A45] uppercase tracking-wide">
             <Briefcase className="w-4 h-4 text-[#E9774F]" />
-            <span>4. Monthly Net Earnings</span>
+            <span>4. Employment, JSA & Net Earnings</span>
           </div>
           <button
             type="button"
@@ -408,25 +408,89 @@ export const BenefitInputPanel: React.FC<Props> = ({ profile, onChange }) => {
             className="text-[11px] font-bold text-[#E9774F] hover:underline flex items-center gap-1"
           >
             <HelpCircle className="w-3.5 h-3.5" />
-            <span>Work taper rules</span>
+            <span>Work & JSA rules</span>
           </button>
         </div>
 
-        {/* Explainer for Earnings */}
+        {/* Explainer for Earnings & New Style JSA */}
         {openHelp === 'earnings' && (
           <div className="p-3 bg-[#E2ECE5] rounded-lg border border-[#cad9ce] text-[11px] text-[#1F5A45] space-y-2">
             <div className="font-bold flex items-center justify-between">
-              <span>Earnings Taper & Work Allowance:</span>
+              <span>Earnings, Redundancy & New Style JSA:</span>
               <button onClick={() => toggleHelp('earnings')} className="text-[#1F5A45]/70"><ChevronUp className="w-3.5 h-3.5" /></button>
             </div>
             <p>
-              • <strong>Work Allowance:</strong> If you or your partner have children or limited capability for work, you can earn up to £404/mo (if claiming rent help) or £673/mo (if not claiming rent help) before your Universal Credit is reduced by a single penny.
+              • <strong>New Style Jobseeker’s Allowance (JSA):</strong> If you recently lost your job or were made redundant after working as an employee, you can get £90.50/week (£71.70 if under 25) for up to 6 months (182 days), provided you paid Class 1 National Insurance contributions in the last 2 complete tax years.
             </p>
             <p>
-              • <strong>The 55% Taper Rate:</strong> For every £1 you earn <em>above</em> your work allowance, your UC reduces by 55p. This means you always keep 45p plus your net wages.
+              • <strong>NO SAVINGS LIMIT FOR JSA:</strong> Unlike Universal Credit, New Style JSA is <strong>not means-tested</strong>. You can have £50,000 in redundancy money or savings and your partner can earn a high income, and you still receive your full JSA!
+            </p>
+            <p>
+              • <strong>Work Allowance & 55% Taper in UC:</strong> For Universal Credit, you keep your full benefit up to £404/mo (with housing costs) or £673/mo (without housing costs), and wages above this taper at only 55p per £1.
             </p>
           </div>
         )}
+
+        {/* Employment Status Selector */}
+        <div>
+          <label className="block text-[11px] font-bold text-[#1F5A45] mb-1">Current Work Status</label>
+          <div className="grid grid-cols-2 gap-1.5">
+            {[
+              { id: 'employed', label: 'Employed / Working' },
+              { id: 'unemployed', label: 'Unemployed / Redundant' },
+              { id: 'self_employed', label: 'Self-Employed' },
+              { id: 'unable_to_work', label: 'Unable to Work' }
+            ].map((st) => (
+              <button
+                key={st.id}
+                type="button"
+                onClick={() => onChange({ 
+                  employmentStatus: st.id as any,
+                  hoursWorkedPerWeek: st.id === 'unemployed' ? 0 : profile.hoursWorkedPerWeek
+                })}
+                className={`py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all border ${
+                  profile.employmentStatus === st.id
+                    ? 'bg-[#1F5A45] text-white border-[#1F5A45]'
+                    : 'bg-white text-[#1F5A45] border-[#cad9ce] hover:bg-[#E2ECE5]'
+                }`}
+              >
+                {st.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* New Style JSA specific questions */}
+        <div className="bg-[#E2ECE5] p-3 rounded-lg border border-[#cad9ce] space-y-2">
+          <label className="flex items-start gap-2 cursor-pointer text-[11px] font-bold text-[#1F5A45]">
+            <input 
+              type="checkbox"
+              checked={profile.hasPaidTwoYearsNI}
+              onChange={(e) => onChange({ hasPaidTwoYearsNI: e.target.checked })}
+              className="rounded accent-[#1F5A45] w-3.5 h-3.5 mt-0.5"
+            />
+            <div>
+              <span>Have you worked as an employee & paid Class 1 National Insurance in the last 2-3 years?</span>
+              <span className="block text-[10px] text-[#1F5A45]/70 font-normal">
+                Qualifies you for <strong>New Style JSA</strong> (£90.50/wk for 6 months) which <strong>ignores savings completely</strong>!
+              </span>
+            </div>
+          </label>
+
+          {profile.employmentStatus !== 'unemployed' && (
+            <div className="pt-1.5 border-t border-[#cad9ce] flex items-center justify-between">
+              <label className="text-[10px] font-bold text-[#1F5A45]">Hours worked per week:</label>
+              <input 
+                type="number"
+                min="0"
+                max="60"
+                value={profile.hoursWorkedPerWeek}
+                onChange={(e) => onChange({ hoursWorkedPerWeek: Number(e.target.value) || 0 })}
+                className="w-20 bg-white border border-[#cad9ce] rounded-lg px-2 py-0.5 text-xs font-bold text-[#1F5A45] text-right"
+              />
+            </div>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div>

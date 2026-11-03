@@ -40,12 +40,16 @@ export interface UserProfile {
   pipDailyLiving: 'none' | 'standard' | 'enhanced';
   pipMobility: 'none' | 'standard' | 'enhanced';
   isCarerForSomeone: boolean; // 35+ hours/week for someone on disability benefit
+
+  // National Insurance & Redundancy / Unemployment (New Style JSA)
+  hasPaidTwoYearsNI: boolean; // Paid Class 1 National Insurance in the last 2 complete tax years
+  hoursWorkedPerWeek: number; // Less than 16 hours/week to qualify for New Style JSA
 }
 
 export interface BenefitBreakdown {
   id: string;
   name: string;
-  category: 'universal_credit' | 'child_benefit' | 'disability' | 'carers' | 'housing_council_tax' | 'pension_credit';
+  category: 'universal_credit' | 'child_benefit' | 'disability' | 'carers' | 'housing_council_tax' | 'pension_credit' | 'jsa';
   monthlyAmount: number;
   weeklyAmount: number;
   annualAmount: number;
@@ -326,7 +330,56 @@ export function calculateUKBenefits(profile: UserProfile): CalculationResult {
   }
 
   // ==========================================
-  // 5. CARER’S ALLOWANCE
+  // 5. NEW STYLE JOBSEEKER’S ALLOWANCE (NEW STYLE JSA)
+  // ==========================================
+  // For people who worked as employees and paid Class 1 NI in the last 2 complete tax years.
+  // Crucial advantage: Non-means tested! SIPP, partner earnings, and savings >£16,000 have ZERO effect!
+  // Duration: Paid for up to 182 days (approx. 6 months).
+  // Rates (2024-2026): Under 25: £71.70/wk. Age 25+: £90.50/wk.
+  const isEligibleForNewJSA = 
+    profile.employmentStatus !== 'employed' && 
+    profile.hoursWorkedPerWeek < 16 && 
+    profile.hasPaidTwoYearsNI &&
+    profile.age >= 18 && 
+    profile.age < STATE_PENSION_AGE;
+
+  if (profile.hasPaidTwoYearsNI && profile.age < STATE_PENSION_AGE) {
+    const jsaWeekly = profile.age < 25 ? 71.70 : 90.50;
+    const jsaAnnual = jsaWeekly * 26; // max 26 weeks (182 days)
+    const jsaMonthly = Math.round(((jsaWeekly * 52) / 12) * 100) / 100;
+
+    const jsaCriteria = [
+      `Worked as an employee and paid sufficient Class 1 National Insurance in the last 2 complete tax years`,
+      `Working fewer than 16 hours a week on average and actively seeking work`,
+      `Age: ${profile.age}yo (${profile.age < 25 ? 'Under 25 rate: £71.70/wk' : 'Age 25+ rate: £90.50/wk'})`,
+      `Partner’s employment, income, or savings have NO IMPACT (it is an individual entitlement)`,
+      `Private pension note: If you receive a personal/workplace pension over £50/week, JSA is reduced by the excess.`
+    ];
+
+    benefits.push({
+      id: 'new_style_jsa',
+      name: "New Style Jobseeker's Allowance (JSA)",
+      category: 'jsa',
+      monthlyAmount: isEligibleForNewJSA ? jsaMonthly : 0,
+      weeklyAmount: isEligibleForNewJSA ? jsaWeekly : 0,
+      annualAmount: isEligibleForNewJSA ? jsaAnnual : 0,
+      durationExplanation: 'Paid every 2 weeks for up to 182 days (6 months maximum). Also awards Class 1 NI credits to protect your State Pension and future benefits.',
+      criteriaExplanation: jsaCriteria,
+      savingsImpactRule: '100% EXEMPT FROM SAVINGS RULES. You can have £50,000 or £100,000+ in savings, ISAs, or SIPP and still receive your full JSA.',
+      eligible: isEligibleForNewJSA,
+      statusTag: isEligibleForNewJSA ? 'Eligible' : 'Likely Ineligible',
+      officialLink: 'https://www.gov.uk/jobseekers-allowance'
+    });
+
+    if (isOverUpperLimit && isEligibleForNewJSA) {
+      recommendations.push(
+        `Important: While your £${countedCapital.toLocaleString()} in savings blocks you from Universal Credit, you ARE ELIGIBLE for New Style JSA (£${jsaWeekly}/wk) because it ignores your savings completely based on your National Insurance record!`
+      );
+    }
+  }
+
+  // ==========================================
+  // 6. CARER’S ALLOWANCE
   // ==========================================
   // £81.90 / week
   // Earnings limit: £151/week after allowable expenses.

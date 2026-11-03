@@ -73,6 +73,9 @@ export function App() {
     pipDailyLiving: 'none',
     pipMobility: 'none',
     isCarerForSomeone: false,
+
+    hasPaidTwoYearsNI: true, // Typically true for someone employed in recent years
+    hoursWorkedPerWeek: 0,
   });
 
   const [activeTab, setActiveTab] = useState<'calculator' | 'savings_sipp' | 'gov_spend' | 'criteria_guide'>('calculator');
@@ -290,6 +293,8 @@ export function App() {
                       pipDailyLiving: 'none',
                       pipMobility: 'none',
                       isCarerForSomeone: false,
+                      hasPaidTwoYearsNI: true,
+                      hoursWorkedPerWeek: 0,
                     });
                   }}
                   className="inline-flex items-center gap-1 text-xs font-bold text-[#1F5A45]/70 hover:text-[#1F5A45]"
@@ -486,6 +491,20 @@ export function App() {
                   <p><strong>Rate:</strong> £81.90 per week.</p>
                   <p><strong>Earnings Cap:</strong> You must not earn more than £151/week net after allowable expenses.</p>
                   <p><strong>Savings:</strong> No capital or savings limit applies!</p>
+                </div>
+              </div>
+
+              {/* New Style JSA Section */}
+              <div className="bg-[#F8F3E8] p-5 rounded-xl border border-[#cad9ce] space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-lg text-[#1F5A45]">New Style Jobseeker's Allowance (JSA)</h4>
+                  <span className="text-xs font-bold text-[#E9774F]">Fortnightly</span>
+                </div>
+                <div className="text-xs text-[#1F5A45]/80 space-y-2">
+                  <p><strong>Who is eligible:</strong> People who were employed and paid Class 1 National Insurance contributions in the last 2 complete tax years, now working under 16 hours/week.</p>
+                  <p><strong>Rate:</strong> £90.50/week for age 25+ (£71.70/week if under 25).</p>
+                  <p><strong>Duration:</strong> Paid for up to 182 days (approx. 6 months). Also credits your NI record for your State Pension.</p>
+                  <p><strong>Savings & Partner:</strong> <em>100% EXEMPT FROM SAVINGS RULES!</em> Your partner's income and savings over £16,000 do not affect your New Style JSA.</p>
                 </div>
               </div>
             </div>
