@@ -9,7 +9,10 @@ import {
   Sparkles,
   RefreshCw,
   SlidersHorizontal,
-  ChevronRight
+  ChevronRight,
+  Eye,
+  Mail,
+  UserCheck
 } from 'lucide-react';
 import { 
   type UserProfile, 
@@ -23,6 +26,19 @@ import { GovernmentExpenditureStats } from './components/GovernmentExpenditureSt
 import { UnsettledMigrantSection } from './components/UnsettledMigrantSection';
 
 export function App() {
+  // Visitor counter starting at 10, persisted in localStorage
+  const [visitorCount] = useState<number>(() => {
+    const saved = localStorage.getItem('uk_benefit_visitor_count');
+    if (saved) {
+      const parsed = parseInt(saved, 10);
+      const nextCount = isNaN(parsed) ? 10 : parsed + 1;
+      localStorage.setItem('uk_benefit_visitor_count', nextCount.toString());
+      return nextCount;
+    }
+    localStorage.setItem('uk_benefit_visitor_count', '10');
+    return 10;
+  });
+
   // Default Initial Profile
   const [profile, setProfile] = useState<UserProfile>({
     relationshipStatus: 'single',
@@ -80,31 +96,43 @@ export function App() {
     <div className="min-h-screen bg-[#F8F3E8] text-[#1F5A45] flex flex-col font-sans">
       {/* Top Header */}
       <header className="bg-[#1F5A45] text-[#F8F3E8] border-b border-[#164232] shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-3">
-            <div className="bg-[#E9774F] p-2 rounded-xl text-white shadow-sm">
-              <Building2 className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white">
-                  UK Benefit Compass
-                </span>
-                <span className="hidden sm:inline-block px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#F3DD87] text-[#1F5A45]">
-                  Live DWP Engine
-                </span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+          
+          {/* Logo & Subtitle */}
+          <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+            <div className="flex items-center gap-3">
+              <div className="bg-[#E9774F] p-2 rounded-xl text-white shadow-sm">
+                <Building2 className="w-6 h-6" />
               </div>
-              <p className="text-xs text-[#E2ECE5]/90">
-                Instant side-by-side UK benefit eligibility & SIPP / savings rules
-              </p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white">
+                    UK Benefit Compass
+                  </span>
+                  <span className="hidden sm:inline-block px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#F3DD87] text-[#1F5A45]">
+                    Live DWP Engine
+                  </span>
+                </div>
+                <p className="text-xs text-[#E2ECE5]/90">
+                  Instant benefit eligibility, housing LHA & SIPP capital analyzer
+                </p>
+              </div>
+            </div>
+
+            {/* Developer & Visitor Badge on Mobile */}
+            <div className="flex md:hidden items-center gap-2">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#164232] text-xs font-bold text-[#F3DD87]">
+                <Eye className="w-3.5 h-3.5" />
+                <span>{visitorCount}</span>
+              </div>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <nav className="flex items-center gap-1.5 bg-[#164232] p-1 rounded-xl">
+          {/* Center / Right: Navigation Tabs */}
+          <nav className="flex items-center gap-1.5 bg-[#164232] p-1 rounded-xl overflow-x-auto max-w-full">
             <button
               onClick={() => setActiveTab('calculator')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
                 activeTab === 'calculator'
                   ? 'bg-[#E9774F] text-white shadow-sm'
                   : 'text-[#E2ECE5] hover:text-white hover:bg-[#1F5A45]'
@@ -116,7 +144,7 @@ export function App() {
 
             <button
               onClick={() => setActiveTab('savings_sipp')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
                 activeTab === 'savings_sipp'
                   ? 'bg-[#E9774F] text-white shadow-sm'
                   : 'text-[#E2ECE5] hover:text-white hover:bg-[#1F5A45]'
@@ -128,7 +156,7 @@ export function App() {
 
             <button
               onClick={() => setActiveTab('gov_spend')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
                 activeTab === 'gov_spend'
                   ? 'bg-[#E9774F] text-white shadow-sm'
                   : 'text-[#E2ECE5] hover:text-white hover:bg-[#1F5A45]'
@@ -140,7 +168,7 @@ export function App() {
 
             <button
               onClick={() => setActiveTab('criteria_guide')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
                 activeTab === 'criteria_guide'
                   ? 'bg-[#E9774F] text-white shadow-sm'
                   : 'text-[#E2ECE5] hover:text-white hover:bg-[#1F5A45]'
@@ -150,6 +178,26 @@ export function App() {
               <span>Statutory Rulebook</span>
             </button>
           </nav>
+
+          {/* Right Corner: Visitor Counter & Developer Credit (Desktop) */}
+          <div className="hidden md:flex items-center gap-3 shrink-0">
+            {/* Live Visitor Counter */}
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#164232] border border-[#287358] text-xs font-extrabold text-[#F3DD87]" title="Unique Visitor Count">
+              <Eye className="w-3.5 h-3.5 text-[#E9774F]" />
+              <span>{visitorCount} Visitors</span>
+            </div>
+
+            {/* Developer Pill */}
+            <a 
+              href="mailto:anildutta007@gmail.com" 
+              className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#E2ECE5] hover:bg-white text-[#1F5A45] text-xs font-bold transition-colors shadow-sm"
+              title="Contact Lead Developer"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-[#1F5A45]" />
+              <span>Dev: <strong>Anil Dutta</strong></span>
+            </a>
+          </div>
+
         </div>
       </header>
 
@@ -449,9 +497,21 @@ export function App() {
       <footer className="bg-[#EFE8DA] border-t border-[#cad9ce] py-6 px-4 sm:px-6 lg:px-8 mt-12">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#1F5A45]/80">
           <div>
-            <span className="font-bold text-[#1F5A45]">UK Benefit Compass</span> — Built in accordance with UK DWP and HMRC regulations.
+            <span className="font-bold text-[#1F5A45]">UK Benefit Compass</span> — Developed by{' '}
+            <a 
+              href="mailto:anildutta007@gmail.com" 
+              className="font-extrabold text-[#1F5A45] hover:text-[#E9774F] underline inline-flex items-center gap-1"
+            >
+              <span>Anil Dutta</span>
+              <Mail className="w-3 h-3" />
+            </a>{' '}
+            (<span className="font-mono text-[#1F5A45]">anildutta007@gmail.com</span>) in accordance with UK DWP and HMRC regulations.
           </div>
           <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#E2ECE5] font-extrabold text-[#1F5A45]">
+              <Eye className="w-3 h-3 text-[#E9774F]" /> {visitorCount} Total Visits
+            </span>
+            <span>•</span>
             <a 
               href="https://www.gov.uk/benefits-calculators" 
               target="_blank" 
