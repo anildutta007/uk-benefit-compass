@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-cream: #F8F3E8;
+  --color-forest: #1F5A45;
+  --color-forest-dark: #164232;
+  --color-forest-light: #287358;
+  --color-coral: #E9774F;
+  --color-coral-hover: #d6643c;
+  --color-butter: #F3DD87;
+  --color-butter-light: #f9eebf;
+  --color-sage: #E2ECE5;
+  --color-sage-dark: #cad9ce;
+  --color-soft-beige: #EFE8DA;
+}
+
+:root {
+  background-color: #F8F3E8;
+  color: #1F5A45;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #F8F3E8;
+  min-height: 100vh;
+}
+
+/* Custom scrollbars and utility styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #EFE8DA;
+}
+::-webkit-scrollbar-thumb {
+  background: #cad9ce;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1F5A45;
+}
